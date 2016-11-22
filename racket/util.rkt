@@ -16,4 +16,14 @@
 (module+ test (check-eq? (NM-remainder 10 3) 1))
 (module+ test (check-eq? (NM-remainder -10 3) -1))
 
+(define (list-index-of e list)
+	(let loop ([list list] [i 0])
+		(if (null? list)
+			#f
+			(if (equal? (car list) e)
+				i
+				(loop (cdr list) (+ i 1))))))
+(module+ test (check-eq? (list-index-of 3 '(7 8 3 4)) 2))
+(module+ test (check-eq? (list-index-of 3 '(2 1 4 5)) #f))
+
 (provide (all-defined-out))

@@ -50,15 +50,19 @@
 	; Letter-name + up to two-digit octave + a space + F for flat or S for sharp (repeat F or S if necessary)
 	(let* (
 		[s (string-downcase s_)]
+		[i_ (list-index-of #\space (string->list s))]
+		[i (if i_ i_ (string-length s))]
 		[letter (string->symbol (substring s 0 1))]
-		[i (if (char=? (string-ref s 2) #\space) 2 3)]
 		[octave (string->number (substring s 1 i))]
-		[accidental-list (string->list (substring s i))]
 		[note (letter->note letter)]
+		[accidental-list (string->list (substring s i))]
 		[sharps (count (lambda (x) (char=? x #\s)) accidental-list)]
 		[flats (count (lambda (x) (char=? x #\f)) accidental-list)]
 		[accidentals (- sharps flats)])
 		(pitch note octave accidentals)))
+(module+ test (check-equal?
+	(pitch 2 4 0)
+	(string->pitch "E4")))
 (module+ test (check-equal?
 	(pitch 3 4 2)
 	(string->pitch "F4 ss")))
@@ -91,3 +95,5 @@
 (module+ test (check-equal?
 	(pitch 3 4 2)
 	(semitones->pitch (pitch->semitones (string->pitch "F4 ss")) (letter->note 'f))))
+
+(provide (all-defined-out))
