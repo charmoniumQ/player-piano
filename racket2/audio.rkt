@@ -17,12 +17,17 @@
 		[rsound (rs-append* rsounds)])
 	rsound))
 
-(define music '(
-[0 4 7]
-[0 5 9]
-[0 4 7]
-[-1 2 7]
-[0 4 12]
-))
+(define (rchord->chord rchord key)
+	(map (curry + key) rchord))
 
-(provide play chord->rsound chords->rsound music)
+;(define music '(
+;[0 4 7]
+;[0 5 9]
+;[0 4 7]
+;[-1 2 7]
+;[0 4 12]
+;))
+
+;(play (chords->rsound music 50 1))
+
+(provide play chord->rsound chords->rsound)
