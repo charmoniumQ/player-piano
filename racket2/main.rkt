@@ -1,51 +1,84 @@
 #lang racket
-
+(require profile)
 (require racket/random)
-(require "chords.rkt")
-(require "audio.rkt")
+(require "prob_chords.rkt")
+(require "solfege.rkt")
+(require "prob_pitches.rkt")
+(require "noise.rkt")
 
-(define chord-transitions (list
-    [list I (list ii iii IV V vi vii*)]
-    [list ii (list V vii*)]
-    [list iii (list IV vi)]
-    [list IV (list ii V vii*)]
-    [list V (list I vi)]
-    [list vi (list ii IV vii*)]
-    [list vii* (list I V vi)]
-))
+(define (sort-hash-by-val hash)
+  (sort (hash->list hash) < #:key (lambda (pair) (cdr pair))))
 
-(define (valid-chords prev-chord)
-  (second (assoc prev-chord chord-transitions)))
-
-; Root motion up a fourth, up a second, or down a third
-; Dominant chords (V vii*) resolve
-; Do not approach iii from ii IV V vii*
-; i can go anywhere
-; iii doesn't go to i
-
-(define (generate num)
-  (let generate ([chords (list I)] [n num])
-    (if (= 0 n)
-        (if (equal? I (last chords))
-            chords
-            (generate chords 1))
+(define (partial-sum lst)
+  (define (partial-sum-helper lst acc out-list)
+    (if (null? lst)
+        out-list
         (let* (
-               [last-chord (last chords)]
-               [next-chord (random-ref (valid-chords last-chord))]
-               [chords_ (cons next-chord chords)])
-          (generate chords_ (- n 1))))))
+               [elem (car lst)]
+               [key (car elem)]
+               [val (cdr elem)]
+               [acc+ (+ acc val)])
+        (partial-sum-helper (cdr lst) acc+ (append out-list (list (cons key acc+)))))))
+  (partial-sum-helper lst 0 '()))
 
-(define (voice chord)
-  (map (lambda (n)
-         (+ (* n 12) (random-ref chord)))
-       (range 4)))
+(define (find-first lst v)
+  (let* (
+         [elem (car lst)]
+         [key (car elem)]
+         [val (cdr elem)])
+    (if (v . <= . val) key (find-first (cdr lst) v))))
 
-(define music (map voice (generate 15)))
-(display music)
-(newline)
-(play (chords->rsound music 40 1))
+(define (hash-pick hash)
+  (let* (
+         [lst (hash->list hash)]
+         [lst_ (partial-sum lst)]
+         [total (cdr (last lst_))]
+         [r (* total (random))]
+         [selected (find-first lst_ r)]
+         ) selected))
+  
 
-; parallel fifths/octaves
-; parallel movement
-; tritones
-; 
+(define (generate-chords-helper num duration chords pitchess rsounds)
+  (if (= 0 num)
+      (if (eq? (hash-pick final-chords/prob) (last chords))
+          (list chords pitchess (rs-append* rsounds))
+          (generate-chords-helper 1 duration chords pitchess rsounds))
+      (if (null? chords)
+          (let* (
+                 [chord (hash-pick initial-chords/prob)]
+                 [solfeges (chord->solfeges chord)]
+                 
+                 [pitches (hash-pick (initial-solfeges->pitches/prob solfeges))]
+                 [rsound (pitches->rsound pitches duration)]
+                 )
+            (generate-chords-helper
+             (sub1 num)
+             duration
+             (append chords (list chord))
+             (append pitchess (list pitches))
+             (append rsounds (list rsound))))
+          (let* (
+                 [prev-chord (last chords)]
+                 [chord (hash-pick (next-chord/prob prev-chord))]
+                 [solfeges (chord->solfeges chord)]
+                 [prev-pitches (last pitchess)]
+                 [pitches (hash-pick (solfeges->pitches/prob solfeges prev-pitches))]
+                 [rsound (pitches->rsound pitches duration)]
+                 )
+            (generate-chords-helper
+             (sub1 num)
+             duration
+             (append chords (list chord))
+             (append pitchess (list pitches))
+             (append rsounds (list rsound)))))))
+
+(define (generate-chords num duration)
+  (generate-chords-helper num duration '() '() '()))
+
+;(profile-thunk (lambda () (generate-chords 10 0.7)))
+(define music (generate-chords 10 0.7))
+
+(first music)
+(second music)
+(read-line)
+(play (third music))
