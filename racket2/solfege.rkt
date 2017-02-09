@@ -25,24 +25,34 @@
     [(6) 11] ; half
     ))
 
-(define (roman degree quality added)
+(define (roman degree quality [sharp 0] [add '()])
   (let* (
          [triad (hash-ref triad-data quality)]
-         [root (diatonic->chromatic degree)]
+         [root (+ sharp (diatonic->chromatic degree))]
          [rchord (root-chord root triad)]
-         [rchord_ (set-union rchord (apply set added))])
+         [rchord_ (set-union rchord (apply set add))])
     rchord_))
 
 
 (define chord->solfeges-data
   (hasheq
-   I (roman 0 'major '())
-   ii (roman 1 'minor '())
-   iii (roman 2 'minor '())
-   IV (roman 3 'major '())
-   V (roman 4 'major '())
-   vi (roman 5 'minor '())
-   vii* (roman 6 'diminished '())
+   ; major
+   I (roman 0 'major)
+   ii (roman 1 'minor)
+   iii (roman 2 'minor)
+   IV (roman 3 'major)
+   V (roman 4 'major)
+   vi (roman 5 'minor)
+   vii* (roman 6 'diminished)
+   ; minor
+   i (roman 0 'minor)
+   ii* (roman 1 'diminished)
+   bIII (roman 2 'diminished -1)
+   iv (roman 3 'minor)
+   bVI (roman 5 'major -1)
+   bVII (roman 6 'major -1)
+   ; tonicization
+   II (roman 1 'major)
    ))
 
 (define (chord->solfeges chord) (hash-ref chord->solfeges-data chord))

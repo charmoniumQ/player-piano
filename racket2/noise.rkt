@@ -10,13 +10,16 @@
          (robust-clip (rs-append* (make-list (exact-ceiling (/ frames_want frames)) rsound)) duration)
          (clip rsound 0 frames_want))))
 
-(define (pitches->rsound pitches duration)
+(define (pitches->rsound pitches duration vol)
   (let* (
          [rsounds (map piano-tone pitches)]
          [rsounds_ (map
                     (curryr robust-clip duration)
                     rsounds)]
-         [rsound (rs-overlay* rsounds_)])
+         [rsounds__ (map
+                     (curry rs-scale vol)
+                     rsounds_)]
+         [rsound (rs-overlay* rsounds__)])
     rsound))
 
 (define (pitchess->rsound pitchess duration)

@@ -8,4 +8,15 @@
 (define vi 'vi)
 (define vii* 'vii*)
 
-(provide I ii iii IV V vi vii*)
+(define i 'i)
+(define ii* 'ii*)
+(define bIII 'bIII)
+(define iv 'iv)
+(define bVI 'bVI)
+(define bVII 'bVII)
+
+(define II 'II)
+
+(provide I ii iii IV V vi vii*
+         i ii* bIII iv V bVI bVII
+         II)

@@ -38,22 +38,23 @@
          ) selected))
   
 
-(define (generate-chords-helper num duration chords pitchess rsounds)
+(define (generate-chords-helper num duration vol chords pitchess rsounds)
   (if (= 0 num)
       (if (eq? (hash-pick final-chords/prob) (last chords))
           (list chords pitchess (rs-append* rsounds))
-          (generate-chords-helper 1 duration chords pitchess rsounds))
+          (generate-chords-helper 1 duration vol chords pitchess rsounds))
       (if (null? chords)
           (let* (
                  [chord (hash-pick initial-chords/prob)]
                  [solfeges (chord->solfeges chord)]
                  
                  [pitches (hash-pick (initial-solfeges->pitches/prob solfeges))]
-                 [rsound (pitches->rsound pitches duration)]
+                 [rsound (pitches->rsound pitches duration vol)]
                  )
             (generate-chords-helper
              (sub1 num)
              duration
+             vol
              (append chords (list chord))
              (append pitchess (list pitches))
              (append rsounds (list rsound))))
@@ -63,20 +64,21 @@
                  [solfeges (chord->solfeges chord)]
                  [prev-pitches (last pitchess)]
                  [pitches (hash-pick (solfeges->pitches/prob solfeges prev-pitches))]
-                 [rsound (pitches->rsound pitches duration)]
+                 [rsound (pitches->rsound pitches duration vol)]
                  )
             (generate-chords-helper
              (sub1 num)
              duration
+             vol
              (append chords (list chord))
              (append pitchess (list pitches))
              (append rsounds (list rsound)))))))
 
-(define (generate-chords num duration)
-  (generate-chords-helper num duration '() '() '()))
+(define (generate-chords num duration vol)
+  (generate-chords-helper num duration vol '() '() '()))
 
 ;(profile-thunk (lambda () (generate-chords 10 0.7)))
-(define music (generate-chords 10 0.7))
+(define music (generate-chords 10 0.7 1.0))
 
 (first music)
 (second music)
