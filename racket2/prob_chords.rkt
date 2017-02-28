@@ -13,7 +13,7 @@
    IV (hasheq ii 1 II 1 V 1 vii* 1)
    V (hasheq i 1 I 1 vi 1 bVI 1) ; modulates to minor
    vi (hasheq ii 1 II 1 IV 1 vii* 1)
-   vii* (hasheq I 1 V 1 vi 1 i 1 V 1 bVI 1) ; modulates to minor
+   vii* (hasheq V 1 vi 1 V 1 bVI 1) ; modulates to minor
    ; minor
    i (hasheq ii* 1 bIII 1 iv 1 V 1 bVI 1 vii* 1)
    ii* (hasheq V 1 vii* 1)

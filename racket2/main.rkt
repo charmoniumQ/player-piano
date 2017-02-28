@@ -78,7 +78,7 @@
   (generate-chords-helper num duration vol '() '() '()))
 
 ;(profile-thunk (lambda () (generate-chords 10 0.7)))
-(define music (generate-chords 10 0.7 1.0))
+(define music (generate-chords 15 0.7 1.5))
 
 (first music)
 (second music)
