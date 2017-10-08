@@ -25,4 +25,4 @@
 (define (pitchess->rsound pitchess duration)
   (rs-append* (map (curryr pitches->rsound duration) pitchess)))
 
-(provide pitches->rsound rs-append* pitchess->rsound play)
+(provide pitches->rsound rs-append* pitchess->rsound play rs-write)
