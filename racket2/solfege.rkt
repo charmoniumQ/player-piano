@@ -49,10 +49,11 @@
    ii* (roman 1 'diminished)
    bIII (roman 2 'diminished -1)
    iv (roman 3 'minor)
+   VI (roman 5 'major 0 '(7))
    bVI (roman 5 'major -1)
    bVII (roman 6 'major -1)
    ; tonicization
-   II (roman 1 'major)
+   II (roman 1 'major 0 '(0))
    ))
 
 (define (chord->solfeges chord) (hash-ref chord->solfeges-data chord))

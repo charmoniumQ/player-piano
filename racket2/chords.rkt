@@ -14,9 +14,10 @@
 (define iv 'iv)
 (define bVI 'bVI)
 (define bVII 'bVII)
+(define VI 'VI)
 
 (define II 'II)
 
 (provide I ii iii IV V vi vii*
          i ii* bIII iv V bVI bVII
-         II)
+         II VI)

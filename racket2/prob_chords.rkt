@@ -7,21 +7,23 @@
 (define chord-probability-data
   (hasheq
    ; major
-   I (hasheq ii 1 II 1 iii 1 IV 1 V 1 vi 1 vii* 1)
+   I (hasheq ii 1 II 1 iii 1 IV 1 V 1 vi 1 vii* 1 VI 1)
    ii (hasheq V 1 vii* 1)
    iii (hasheq IV 1 vi 1)
    IV (hasheq ii 1 II 1 V 1 vii* 1)
-   V (hasheq i 1 I 1 vi 1 bVI 1) ; modulates to minor
+   V (hasheq i 1 I 1 vi 1) ; modulates to minor
    vi (hasheq ii 1 II 1 IV 1 vii* 1)
-   vii* (hasheq V 1 vi 1 V 1 bVI 1) ; modulates to minor
+   vii* (hasheq V 1 V 1 bVI 1) ; modulates to minor
    ; minor
-   i (hasheq ii* 1 bIII 1 iv 1 V 1 bVI 1 vii* 1)
+   i (hasheq ii* 1 bIII 1 iv 1 V 1 bVI 1 bVII 1)
    ii* (hasheq V 1 vii* 1)
    bIII (hasheq iv 1 bVI 1)
    iv (hasheq ii* 1  II 1 V 1 vii* 1)
    bVI (hasheq ii* 1 II 1 iv 1 vii* 1)
+   VI (hasheq II 1 ii 1)
+   bVII (hasheq i 1 bVI 1)
    ; tonicization
-   II (hasheq V 1 iii 1)
+   II (hasheq V 1 IV 1)
    ))
 
 ;(define (chord-transitions prev-chord)
